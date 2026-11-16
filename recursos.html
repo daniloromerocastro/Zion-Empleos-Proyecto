@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recursos y Consejos | Zion Empleos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen flex flex-col font-sans selection:bg-amber-500 selection:text-slate-900">
+
+    <!-- HEADER -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="index.html" class="font-display font-extrabold text-xl text-white">ZION <span class="text-amber-500">EMPLEOS</span></a>
+            
+            <nav class="hidden lg:flex items-center space-x-2 text-sm font-semibold">
+                <a href="index.html" class="px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition">Inicio</a>
+                <a href="resultados.html" class="px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition">Buscar Empleos</a>
+                <a href="empresa.html" class="px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition">Empresas</a>
+                <a href="recursos.html" class="px-3 py-2 text-amber-500 bg-slate-800 rounded-lg"><i class="fa-solid fa-book-open-reader mr-1.5"></i>Recursos</a>
+                <a href="foros.html" class="px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition">Foros</a>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                <a href="registro.html" id="btn-login-header" class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-300 bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:text-white transition">Iniciar Sesión</a>
+                <button onclick="irAMiPanel()" id="btn-panel-header" class="hidden px-4 py-2 rounded-xl text-sm font-bold text-slate-900 bg-amber-500 hover:bg-amber-400 transition shadow-md">Mi Perfil</button>
+                <button onclick="cerrarSesion()" id="btn-logout-header" class="hidden px-4 py-2 rounded-xl text-sm font-semibold text-white bg-rose-600 hover:bg-rose-700 transition">Salir</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="max-w-7xl mx-auto px-4 py-12 flex-grow w-full">
+        
+        <!-- Título y Botón -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div>
+                <h1 class="text-3xl font-display font-extrabold text-white mb-2">Centro de Recursos</h1>
+                <p class="text-sm text-slate-400">Guías prácticas, plantillas de CV, preparación de entrevistas y noticias del mercado laboral.</p>
+            </div>
+            <button onclick="alert('El administrador pronto habilitará la publicación de nuevos recursos.')" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-900 text-sm font-bold rounded-xl shadow-lg shadow-amber-500/20 transition flex items-center justify-center">
+                <i class="fa-solid fa-plus mr-2"></i> Publicar Nuevo Recurso
+            </button>
+        </div>
+
+        <!-- Filtros de Categoría -->
+        <div class="flex flex-wrap gap-2 text-xs font-bold mb-8">
+            <button class="px-4 py-2 rounded-xl bg-slate-800 text-amber-500 border border-slate-700">Todos los Recursos</button>
+            <button class="px-4 py-2 rounded-xl bg-slate-900 text-slate-400 border border-slate-800 hover:text-white hover:bg-slate-800 transition">Preparación de Entrevistas</button>
+            <button class="px-4 py-2 rounded-xl bg-slate-900 text-slate-400 border border-slate-800 hover:text-white hover:bg-slate-800 transition">Elaboración de CV</button>
+            <button class="px-4 py-2 rounded-xl bg-slate-900 text-slate-400 border border-slate-800 hover:text-white hover:bg-slate-800 transition">Habilidades Profesionales</button>
+            <button class="px-4 py-2 rounded-xl bg-slate-900 text-slate-400 border border-slate-800 hover:text-white hover:bg-slate-800 transition">Noticias del Sector</button>
+        </div>
+
+        <!-- Grid de Recursos -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <!-- Tarjeta 1 -->
+            <div class="bg-slate-900 rounded-2xl border border-slate-800 shadow-lg overflow-hidden group hover:border-amber-500/50 transition flex flex-col">
+                <div class="h-32 bg-slate-800 flex items-center justify-center border-b border-slate-700 relative overflow-hidden">
+                    <i class="fa-solid fa-file-signature text-5xl text-slate-600 group-hover:scale-110 transition duration-300"></i>
+                    <span class="absolute top-3 left-3 bg-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider border border-blue-500/30">Currículum</span>
+                </div>
+                <div class="p-6 flex flex-col flex-grow">
+                    <h3 class="text-lg font-bold text-white mb-2 group-hover:text-amber-400 transition">5 Errores fatales en tu CV que debes evitar</h3>
+                    <p class="text-sm text-slate-400 mb-4 flex-grow">Descubre qué elementos están haciendo que los reclutadores descarten tu currículum en los primeros 5 segundos.</p>
+                    <div class="flex items-center justify-between text-xs text-slate-500 mt-auto pt-4 border-t border-slate-800">
+                        <span><i class="fa-regular fa-clock mr-1"></i> 5 min lectura</span>
+                        <a href="#" class="text-amber-500 font-bold hover:underline">Leer más <i class="fa-solid fa-arrow-right ml-1"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta 2 -->
+            <div class="bg-slate-900 rounded-2xl border border-slate-800 shadow-lg overflow-hidden group hover:border-amber-500/50 transition flex flex-col">
+                <div class="h-32 bg-slate-800 flex items-center justify-center border-b border-slate-700 relative overflow-hidden">
+                    <i class="fa-solid fa-user-tie text-5xl text-slate-600 group-hover:scale-110 transition duration-300"></i>
+                    <span class="absolute top-3 left-3 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider border border-emerald-500/30">Entrevistas</span>
+                </div>
+                <div class="p-6 flex flex-col flex-grow">
+                    <h3 class="text-lg font-bold text-white mb-2 group-hover:text-amber-400 transition">Cómo responder a "¿Cuál es tu mayor debilidad?"</h3>
+                    <p class="text-sm text-slate-400 mb-4 flex-grow">Una guía paso a paso para transformar una debilidad en una oportunidad de demostrar tu valor profesional.</p>
+                    <div class="flex items-center justify-between text-xs text-slate-500 mt-auto pt-4 border-t border-slate-800">
+                        <span><i class="fa-regular fa-clock mr-1"></i> 8 min lectura</span>
+                        <a href="#" class="text-amber-500 font-bold hover:underline">Leer más <i class="fa-solid fa-arrow-right ml-1"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta 3 -->
+            <div class="bg-slate-900 rounded-2xl border border-slate-800 shadow-lg overflow-hidden group hover:border-amber-500/50 transition flex flex-col">
+                <div class="h-32 bg-slate-800 flex items-center justify-center border-b border-slate-700 relative overflow-hidden">
+                    <i class="fa-solid fa-chart-line text-5xl text-slate-600 group-hover:scale-110 transition duration-300"></i>
+                    <span class="absolute top-3 left-3 bg-amber-500/20 text-amber-500 text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider border border-amber-500/30">Noticias</span>
+                </div>
+                <div class="p-6 flex flex-col flex-grow">
+                    <h3 class="text-lg font-bold text-white mb-2 group-hover:text-amber-400 transition">El mercado laboral tech en El Salvador para 2026</h3>
+                    <p class="text-sm text-slate-400 mb-4 flex-grow">Análisis de las tendencias salariales, los lenguajes más demandados y el auge del trabajo remoto en el país.</p>
+                    <div class="flex items-center justify-between text-xs text-slate-500 mt-auto pt-4 border-t border-slate-800">
+                        <span><i class="fa-regular fa-clock mr-1"></i> 10 min lectura</span>
+                        <a href="#" class="text-amber-500 font-bold hover:underline">Leer más <i class="fa-solid fa-arrow-right ml-1"></i></a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="js/auth.js"></script>
+    <script>
+        function irAMiPanel() {
+            const rol = localStorage.getItem('usuario_rol');
+            if (rol === 'empresa') window.location.href = 'empresa.html';
+            else if (rol === 'admin') window.location.href = 'admin.html';
+            else window.location.href = 'usuario.html';
+        }
+    </script>
+</body>
+</html>

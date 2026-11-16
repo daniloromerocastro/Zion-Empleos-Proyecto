@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Empleo | Zion Empleos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen flex flex-col font-sans">
+    
+    <header class="bg-slate-900 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="index.html" class="font-extrabold text-xl text-white">ZION <span class="text-amber-500">EMPLEOS</span></a>
+            <a href="resultados.html" class="text-sm font-bold text-amber-500 hover:underline"><i class="fa-solid fa-arrow-left mr-1"></i> Volver a resultados</a>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 flex-grow w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Columna Izquierda: Detalles -->
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-slate-900 p-8 rounded-3xl border border-slate-800 shadow-xl">
+                    <div class="flex flex-wrap items-center gap-2 mb-4">
+                        <span class="bg-slate-800 text-amber-500 text-xs font-bold px-3 py-1 rounded-full border border-slate-700" id="det-sector">Sector</span>
+                        <span class="bg-indigo-900/50 text-indigo-300 text-xs font-bold px-3 py-1 rounded-full border border-indigo-700/50" id="det-modalidad">Modalidad</span>
+                    </div>
+                    
+                    <h1 class="text-3xl font-extrabold text-white mb-2" id="det-titulo">Título del Puesto</h1>
+                    <p class="text-lg font-semibold text-slate-400 mb-6"><i class="fa-solid fa-building mr-2"></i> <span id="det-empresa">Empresa</span></p>
+
+                    <div class="mb-8 border-b border-slate-800 pb-8">
+                        <p class="text-4xl font-extrabold text-emerald-400 mb-1"><span id="det-salario">$0</span> <span class="text-lg text-slate-500 font-medium">USD</span></p>
+                        <p class="text-sm text-slate-400">Salario mensual • <span id="det-contrato">Contrato</span></p>
+                    </div>
+
+                    <div class="space-y-8">
+                        <div>
+                            <h3 class="text-xl font-bold text-white mb-3">Descripción y Responsabilidades del Puesto</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed" id="det-desc">-</p>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white mb-3">Requisitos y Habilidades Solicitadas</h3>
+                            <ul class="text-sm text-slate-300" id="det-reqs-list">
+                                <!-- JS inyecta checks -->
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white mb-3">Beneficios y Prestaciones</h3>
+                            <ul class="text-sm text-slate-300" id="det-beneficios-list">
+                                <!-- JS inyecta iconos -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mt-10 pt-6 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <p class="text-xs text-slate-400"><i class="fa-solid fa-envelope mr-1"></i> Contacto: <span id="det-contacto">-</span></p>
+                        <button id="btn-postular" class="w-full sm:w-auto px-8 py-3 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold rounded-xl shadow-lg transition">
+                            <i class="fa-solid fa-paper-plane mr-2"></i> Aplicar a este Trabajo Ahora
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Ficha de la Empresa -->
+            <div class="lg:col-span-1">
+                <div class="bg-slate-900 p-6 rounded-3xl border border-slate-800 shadow-xl sticky top-24">
+                    <h3 class="text-lg font-bold text-white mb-6 border-b border-slate-800 pb-3">Ficha de la Empresa Contratante</h3>
+                    
+                    <div class="space-y-4 text-sm">
+                        <div>
+                            <p class="text-slate-500 text-xs uppercase font-bold">Razón Social</p>
+                            <p class="text-slate-200 font-medium" id="det-empresa-ficha">Empresa</p>
+                        </div>
+                        <div>
+                            <p class="text-slate-500 text-xs uppercase font-bold">Sede Principal</p>
+                            <p class="text-slate-200" id="det-sede">-</p>
+                        </div>
+                        <div>
+                            <p class="text-slate-500 text-xs uppercase font-bold">Sitio Web</p>
+                            <p class="text-amber-500" id="det-web">-</p>
+                        </div>
+                    </div>
+
+                    <button id="btn-postular-2" class="w-full mt-8 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg transition">
+                        Postularme con mi CV
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="js/auth.js"></script>
+    <script src="js/busqueda.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarDetalleEmpleo();
+            // Asignar el segundo botón también a la función de postular
+            const btn2 = document.getElementById('btn-postular-2');
+            const btn1 = document.getElementById('btn-postular');
+            btn2.onclick = () => btn1.click();
+        });
+    </script>
+</body>
+</html>

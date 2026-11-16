@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso | Zion Empleos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen flex items-center justify-center p-4 font-sans">
+
+    <div class="bg-slate-900 rounded-3xl shadow-2xl border border-slate-800 w-full max-w-2xl p-8 md:p-10 my-8">
+        <div class="text-center mb-8 cursor-pointer" onclick="window.location.href='index.html'">
+            <img src="multimedia/Zion Empleos.png" alt="Zion Empleos" class="h-16 mx-auto mb-3">
+            <span class="font-extrabold text-2xl text-white tracking-tight">ZION <span class="text-amber-500">EMPLEOS</span></span>
+        </div>
+
+        <!-- Pestañas de Login/Registro -->
+        <div class="flex bg-slate-800 p-1 rounded-2xl mb-6 text-xs font-bold">
+            <button onclick="switchAuthTab('login')" id="tab-login" class="flex-1 py-2.5 rounded-xl bg-slate-700 text-amber-500 shadow-sm transition">Iniciar Sesión</button>
+            <button onclick="switchAuthTab('register')" id="tab-register" class="flex-1 py-2.5 rounded-xl text-slate-400 hover:text-white transition">Crear Cuenta Nueva</button>
+        </div>
+
+        <!-- FORMULARIO LOGIN -->
+        <form id="form-login" onsubmit="event.preventDefault(); realizarLogin();" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-400 mb-1">Correo Electrónico</label>
+                <input type="email" required class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:ring-2 focus:ring-amber-500">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-400 mb-1">Contraseña</label>
+                <input type="password" required class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:ring-2 focus:ring-amber-500">
+            </div>
+            <div class="bg-slate-800/50 p-3 rounded-xl border border-slate-700 mt-2">
+                <label class="block text-xs font-bold text-amber-500 mb-1"><i class="fa-solid fa-flask mr-1"></i> Entrar como (Modo Prueba):</label>
+                <select id="login-rol" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm font-semibold text-white">
+                    <option value="candidato">Candidato</option>
+                    <option value="empresa">Empresa</option>
+                    <option value="admin">Administrador</option>
+                </select>
+            </div>
+            <button type="submit" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold rounded-xl shadow-lg mt-4 transition">Entrar al Sistema</button>
+        </form>
+
+        <!-- FORMULARIOS DE REGISTRO -->
+        <div id="form-register-container" class="hidden space-y-5">
+            
+            <!-- Selector de tipo -->
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="switchRegisterType('candidato')" id="btn-reg-cand" class="p-3.5 rounded-2xl border-2 border-amber-500 bg-amber-500/10 text-left transition">
+                    <span class="text-[10px] font-bold text-amber-500 uppercase">Persona</span>
+                    <p class="font-bold text-white text-sm mt-1">Busco Empleo</p>
+                </button>
+                <button onclick="switchRegisterType('empresa')" id="btn-reg-emp" class="p-3.5 rounded-2xl border-2 border-slate-700 bg-slate-800 text-left transition">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase">Corporativo</span>
+                    <p class="font-bold text-white text-sm mt-1">Soy Empresa</p>
+                </button>
+            </div>
+
+            <!-- REGISTRO CANDIDATO -->
+            <form id="form-reg-candidato" onsubmit="event.preventDefault(); alert('Candidato registrado con éxito. Ahora puedes iniciar sesión.'); switchAuthTab('login');" class="space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="text" placeholder="Nombres" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white text-sm">
+                    <input type="text" placeholder="Apellidos" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white text-sm">
+                </div>
+                <input type="email" placeholder="Correo Electrónico" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white text-sm">
+                <input type="text" placeholder="Profesión o Especialidad" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white text-sm">
+                <div class="flex items-start space-x-3 mt-2">
+                    <input type="checkbox" required class="mt-1 accent-amber-500">
+                    <label class="text-xs text-slate-400">Acepto los Términos y Condiciones y autorizo el uso de mis datos para procesos de selección.</label>
+                </div>
+                <button type="submit" class="w-full py-3 bg-amber-500 text-slate-900 font-bold rounded-xl mt-2">Completar Registro</button>
+            </form>
+
+            <!-- REGISTRO EMPRESA -->
+            <form id="form-reg-empresa" onsubmit="event.preventDefault(); alert('Solicitud enviada al Administrador.'); switchAuthTab('login');" class="hidden space-y-4">
+                <div class="bg-rose-500/10 border-l-4 border-rose-500 p-3 rounded-r-xl">
+                    <h4 class="text-rose-400 font-bold text-xs"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Cero Tolerancia a Estafas</h4>
+                    <p class="text-[11px] text-rose-200 mt-1">Zion Empleos se toma muy en serio la veracidad. Cuentas con documentos falsos serán reportadas.</p>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <input type="text" placeholder="Razón Social" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white text-sm">
+                    <input type="text" placeholder="NIT" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white text-sm">
+                </div>
+                <input type="text" placeholder="Representante Legal" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white text-sm">
+                <input type="email" placeholder="Correo Corporativo" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white text-sm">
+                
+                <div class="grid grid-cols-2 gap-3 bg-slate-800/50 p-3 rounded-xl border border-slate-700">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 mb-1">Escritura (PDF)</label>
+                        <input type="file" required class="w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:font-bold file:bg-slate-700 file:text-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 mb-1">NIT/NRC (PDF)</label>
+                        <input type="file" required class="w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:font-bold file:bg-slate-700 file:text-amber-500">
+                    </div>
+                </div>
+
+                <div class="flex items-start space-x-3">
+                    <input type="checkbox" required class="mt-1 accent-amber-500">
+                    <label class="text-xs text-slate-400">Declaro que la información es veraz y acepto la política de 0 tolerancia a fraudes.</label>
+                </div>
+                <button type="submit" class="w-full py-3 bg-indigo-600 text-white font-bold rounded-xl mt-2">Enviar a Revisión</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        function realizarLogin() {
+            loginSimulado(document.getElementById('login-rol').value); 
+        }
+        function switchAuthTab(tab) {
+            if(tab === 'login') {
+                document.getElementById('form-login').classList.remove('hidden');
+                document.getElementById('form-register-container').classList.add('hidden');
+                document.getElementById('tab-login').className = "flex-1 py-2.5 rounded-xl bg-slate-700 text-amber-500 shadow-sm transition";
+                document.getElementById('tab-register').className = "flex-1 py-2.5 rounded-xl text-slate-400 hover:text-white transition";
+            } else {
+                document.getElementById('form-login').classList.add('hidden');
+                document.getElementById('form-register-container').classList.remove('hidden');
+                document.getElementById('tab-register').className = "flex-1 py-2.5 rounded-xl bg-slate-700 text-amber-500 shadow-sm transition";
+                document.getElementById('tab-login').className = "flex-1 py-2.5 rounded-xl text-slate-400 hover:text-white transition";
+                switchRegisterType('candidato');
+            }
+        }
+        function switchRegisterType(tipo) {
+            if(tipo === 'candidato') {
+                document.getElementById('form-reg-candidato').classList.remove('hidden');
+                document.getElementById('form-reg-empresa').classList.add('hidden');
+                document.getElementById('btn-reg-cand').className = "p-3.5 rounded-2xl border-2 border-amber-500 bg-amber-500/10 text-left transition";
+                document.getElementById('btn-reg-emp').className = "p-3.5 rounded-2xl border-2 border-slate-700 bg-slate-800 text-left transition";
+            } else {
+                document.getElementById('form-reg-candidato').classList.add('hidden');
+                document.getElementById('form-reg-empresa').classList.remove('hidden');
+                document.getElementById('btn-reg-emp').className = "p-3.5 rounded-2xl border-2 border-amber-500 bg-amber-500/10 text-left transition";
+                document.getElementById('btn-reg-cand').className = "p-3.5 rounded-2xl border-2 border-slate-700 bg-slate-800 text-left transition";
+            }
+        }
+    </script>
+</body>
+</html>

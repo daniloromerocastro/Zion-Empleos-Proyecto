@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Empresa | Zion Empleos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen flex flex-col font-sans">
+
+    <!-- HEADER -->
+    <header class="bg-slate-900 border-b border-slate-800 shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <img src="multimedia/Zion Empleos.png" alt="Zion" class="h-10">
+                <div>
+                    <span class="font-display font-extrabold text-xl text-white">ZION <span class="text-amber-500">EMPRESAS</span></span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="text-xs font-semibold text-slate-300 hidden sm:block bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
+                    <i class="fa-solid fa-building mr-1 text-amber-500"></i> NovaTech Solutions S.A.
+                </span>
+                <button onclick="cerrarSesion()" class="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 transition">
+                    <i class="fa-solid fa-right-from-bracket mr-1"></i> Salir
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
+        
+        <!-- Cabecera Corporativa y Pestañas -->
+        <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg mb-6 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-4">
+                <div class="w-14 h-14 rounded-2xl bg-slate-800 text-amber-500 flex items-center justify-center text-2xl border border-slate-700">
+                    <i class="fa-solid fa-building-shield"></i>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <h1 class="text-xl font-display font-extrabold text-white">NovaTech Solutions S.A. de C.V.</h1>
+                        <span class="px-2.5 py-0.5 text-[11px] font-bold bg-emerald-500/20 text-emerald-400 rounded-full border border-emerald-500/30">
+                            <i class="fa-solid fa-circle-check mr-1"></i>Empresa Aprobada
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-0.5">NIT: 0614-180915-102-4 • Sector: Tecnología • San Salvador</p>
+                </div>
+            </div>
+            
+            <div class="flex bg-slate-800 p-1 rounded-xl border border-slate-700 text-xs font-bold">
+                <button onclick="switchTab('vacantes')" id="tab-btn-vacantes" class="px-4 py-2 rounded-lg bg-slate-700 text-amber-500 shadow-sm transition">
+                    <i class="fa-solid fa-briefcase mr-1"></i> Mis Vacantes
+                </button>
+                <button onclick="switchTab('publicar')" id="tab-btn-publicar" class="px-4 py-2 rounded-lg text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-plus-circle mr-1"></i> Publicar Nueva
+                </button>
+            </div>
+        </div>
+
+        <!-- VISTA 1: TABLA CON FILTROS -->
+        <div id="vista-vacantes" class="space-y-4">
+            <div class="flex flex-col md:flex-row justify-between items-center bg-slate-900 p-4 rounded-2xl border border-slate-800 gap-4">
+                <div>
+                    <h2 class="text-lg font-bold text-white">Gestión de Ofertas Publicadas</h2>
+                </div>
+                <!-- FILTRO POR ESTADO -->
+                <div class="flex items-center space-x-2 bg-slate-800 p-1.5 rounded-xl border border-slate-700">
+                    <label class="text-xs font-bold text-slate-400 pl-2">Filtrar por estado:</label>
+                    <select id="filtro-estado-vacante" onchange="renderizarVacantesEmpresa()" class="bg-slate-900 border-0 text-xs font-bold text-amber-500 rounded-lg py-1.5 pl-3 pr-8 focus:ring-2 focus:ring-amber-500 cursor-pointer">
+                        <option value="Todos">Todos los estados</option>
+                        <option value="Pendiente">En Revisión</option>
+                        <option value="Aprobado">Aprobados</option>
+                        <option value="Rechazado">Rechazados</option>
+                        <option value="Revocado">Revocados</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 rounded-2xl border border-slate-800 shadow-lg overflow-hidden">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-800/50 text-slate-400 uppercase text-xs border-b border-slate-700">
+                            <th class="py-4 px-4 font-bold">Título del Puesto</th>
+                            <th class="py-4 px-4 font-bold">Fecha</th>
+                            <th class="py-4 px-4 font-bold">Salario</th>
+                            <th class="py-4 px-4 font-bold">Estado</th>
+                            <th class="py-4 px-4 font-bold text-right">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-vacantes-empresa" class="divide-y divide-slate-800">
+                        <!-- JS llena esto -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- VISTA 2: FORMULARIO COMPLETO DE PUBLICACIÓN (Restaurado del Prototipo) -->
+        <div id="vista-publicar" class="hidden bg-slate-900 p-6 md:p-8 rounded-2xl border border-slate-800 shadow-lg">
+            <h2 class="text-xl font-display font-bold text-white mb-1">Publicar Nueva Oferta de Trabajo</h2>
+            <p class="text-xs text-slate-400 mb-6">Completa los detalles de la vacante. Al publicar, entrará en revisión por un administrador.</p>
+
+            <form onsubmit="publicarNuevaVacante(event)" class="space-y-5 text-sm">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="md:col-span-2">
+                        <label class="block font-bold text-slate-400 mb-1">Título del Puesto / Vacante *</label>
+                        <input type="text" id="new-title" required placeholder="Ej. Ingeniero de Datos Senior" class="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-400 mb-1">Sector Industrial *</label>
+                        <select id="new-sector" class="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none">
+                            <option value="Tecnología y Software">Tecnología y Software</option>
+                            <option value="Banca y Finanzas">Banca y Finanzas</option>
+                            <option value="Diseño y Creatividad">Diseño y Creatividad</option>
+                            <option value="Ingeniería e Industria">Ingeniería e Industria</option>
+                            <option value="Marketing y Ventas">Marketing y Ventas</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block font-bold text-slate-400 mb-1">Ubicación *</label>
+                        <select id="new-location" class="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none">
+                            <option value="San Salvador">San Salvador</option>
+                            <option value="Santa Ana">Santa Ana</option>
+                            <option value="La Libertad">La Libertad</option>
+                            <option value="San Miguel">San Miguel</option>
+                            <option value="Remoto Regional">Remoto Regional</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-400 mb-1">Modalidad *</label>
+                        <select id="new-modality" class="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none">
+                            <option value="Híbrido">Híbrido</option>
+                            <option value="Remoto">Remoto</option>
+                            <option value="Presencial">Presencial</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-400 mb-1">Experiencia *</label>
+                        <select id="new-exp" class="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none">
+                            <option value="Mid-Level (2-4 años)">Mid-Level (2-4 años)</option>
+                            <option value="Junior (0-2 años)">Junior (0-2 años)</option>
+                            <option value="Senior (5+ años)">Senior (5+ años)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-400 mb-1">Salario (USD) *</label>
+                        <input type="number" id="new-salary" required placeholder="Ej. 1800" class="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-bold text-slate-400 mb-1">Tipo de Contrato</label>
+                        <select class="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none">
+                            <option>Tiempo Completo (Indefinido)</option>
+                            <option>Por Proyecto / Temporal</option>
+                            <option>Medio Tiempo</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-400 mb-1">Correo de Reclutamiento *</label>
+                        <input type="email" required value="talento@novatech.com.sv" class="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-400 mb-1">Descripción General y Responsabilidades *</label>
+                    <textarea id="new-desc" rows="3" required class="w-full p-3.5 bg-slate-800 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-amber-500 focus:outline-none"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-bold text-slate-400 mb-1">Requisitos (Separados por coma) *</label>
+                        <textarea rows="2" required placeholder="Ej. Lic. en Sistemas, 3 años SQL..." class="w-full p-3.5 bg-slate-800 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-amber-500 focus:outline-none"></textarea>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-400 mb-1">Beneficios (Separados por coma) *</label>
+                        <textarea rows="2" required placeholder="Ej. Seguro médico, Bono anual..." class="w-full p-3.5 bg-slate-800 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-amber-500 focus:outline-none"></textarea>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-2">
+                    <button type="submit" class="px-8 py-3 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold rounded-xl shadow-lg shadow-amber-500/20 transition">
+                        <i class="fa-solid fa-paper-plane mr-1.5"></i> Enviar a Revisión
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="js/auth.js"></script>
+    <script src="js/empresa.js"></script>
+</body>
+</html>

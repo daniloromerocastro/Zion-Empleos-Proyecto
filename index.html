@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zion Empleos | Portal de Búsqueda de Trabajo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Plus Jakarta Sans', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen flex flex-col font-sans selection:bg-amber-500 selection:text-slate-900">
+
+    <!-- HEADER OSCURO CON LOGO Y MENÚ COMPLETO -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+            
+            <!-- Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="window.location.href='index.html'">
+                <img src="multimedia/Zion Empleos.png" alt="Zion Empleos" class="h-12 object-contain">
+                <div class="hidden sm:block">
+                    <div class="flex items-center space-x-1.5">
+                        <span class="font-display font-extrabold text-xl tracking-tight text-white">ZION</span>
+                        <span class="font-display font-bold text-xl tracking-tight text-amber-500">EMPLEOS</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 -mt-1 font-medium">Talent & Corporate Network</p>
+                </div>
+            </div>
+
+            <!-- Navegación (Como en tu prototipo) -->
+            <nav class="hidden lg:flex items-center space-x-2 text-sm font-semibold">
+                <a href="index.html" class="px-3 py-2 text-amber-500 bg-slate-800/50 rounded-lg"><i class="fa-solid fa-house mr-1.5"></i>Inicio</a>
+                <a href="resultados.html" class="px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition"><i class="fa-solid fa-magnifying-glass mr-1.5"></i>Buscar Empleos</a>
+                <a href="empresa.html" class="px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition"><i class="fa-solid fa-building mr-1.5"></i>Empresas</a>
+                <a href="recursos.html" class="px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition"><i class="fa-solid fa-book-open-reader mr-1.5"></i>Recursos</a>
+                <a href="foros.html" class="px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition"><i class="fa-solid fa-comments mr-1.5"></i>Foros</a>
+            </nav>
+
+            <!-- Botones de Sesión Dinámicos -->
+            <div class="flex items-center space-x-3">
+                <a href="registro.html" id="btn-login-header" class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-300 bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:text-white transition">
+                    Iniciar Sesión
+                </a>
+                
+                <button onclick="irAMiPanel()" id="btn-panel-header" class="hidden px-4 py-2 rounded-xl text-sm font-bold text-slate-900 bg-amber-500 hover:bg-amber-400 transition shadow-md shadow-amber-500/20">
+                    <i class="fa-solid fa-user mr-1"></i> Mi Perfil
+                </button>
+                <button onclick="cerrarSesion()" id="btn-logout-header" class="hidden px-4 py-2 rounded-xl text-sm font-semibold text-white bg-rose-600 hover:bg-rose-700 transition">
+                    Salir
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-grow">
+        <!-- Hero Section -->
+        <div class="relative bg-gradient-to-r from-slate-900 via-slate-900 to-slate-800 py-24 px-4 overflow-hidden border-b border-slate-800">
+            <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+            <div class="max-w-4xl mx-auto text-center relative z-10">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-500 border border-amber-500/30 mb-4">
+                    <i class="fa-solid fa-bolt mr-1.5"></i> Plataforma Líder de Empleabilidad Regional
+                </span>
+                <h1 class="text-4xl md:text-6xl font-display font-extrabold mb-6 text-white leading-tight">
+                    Impulsa tu carrera o <span class="text-amber-500">contrata al mejor talento.</span>
+                </h1>
+                <p class="text-lg text-slate-400 mb-10 max-w-2xl mx-auto">
+                    Explora cientos de vacantes en empresas verificadas, consulta valoraciones reales y postúlate con un solo clic.
+                </p>
+                
+                <!-- Buscador -->
+                <div class="bg-slate-800 p-2 rounded-2xl flex flex-col md:flex-row gap-2 shadow-2xl border border-slate-700">
+                    <input type="text" placeholder="Cargo, profesión o palabra clave..." class="flex-grow px-4 py-3 bg-transparent text-white placeholder-slate-500 focus:outline-none">
+                    <select class="px-4 py-3 bg-slate-700 text-white rounded-xl border-l border-slate-600 focus:outline-none">
+                        <option>Todas las ubicaciones</option>
+                        <option>San Salvador</option>
+                        <option>Santa Ana</option>
+                    </select>
+                    <button onclick="window.location.href='resultados.html'" class="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold px-8 py-3 rounded-xl transition">
+                        <i class="fa-solid fa-magnifying-glass mr-2"></i> Buscar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vacantes Destacadas -->
+        <div class="max-w-7xl mx-auto px-4 py-16">
+            <div class="flex justify-between items-end mb-8">
+                <div>
+                    <h2 class="text-3xl font-display font-bold text-white mb-2">Vacantes Destacadas</h2>
+                    <p class="text-slate-400 text-sm">Oportunidades verificadas con contratación inmediata</p>
+                </div>
+                <a href="resultados.html" class="text-amber-500 font-bold text-sm hover:underline hidden sm:block">Ver todas <i class="fa-solid fa-arrow-right ml-1"></i></a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Tarjeta 1 -->
+                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg hover:border-amber-500/50 transition group">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 bg-slate-800 text-amber-500 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-laptop-code"></i></div>
+                        <span class="bg-emerald-500/10 text-emerald-400 text-xs font-bold px-2.5 py-1 rounded-full border border-emerald-500/20">Aprobado</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white group-hover:text-amber-400 transition">Desarrollador Full Stack</h3>
+                    <p class="text-sm text-slate-400 mb-4">NovaTech Solutions • San Salvador</p>
+                    <p class="text-lg font-extrabold text-white mb-6">$1,800 <span class="text-xs text-slate-500 font-normal">/ mes</span></p>
+                    <a href="detalle_empleo.html" class="block text-center w-full py-2.5 bg-slate-800 hover:bg-amber-500 hover:text-slate-900 text-white font-bold rounded-xl transition">Ver Detalles</a>
+                </div>
+
+                <!-- Tarjeta 2 -->
+                <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-lg hover:border-amber-500/50 transition group">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="w-12 h-12 bg-slate-800 text-emerald-500 rounded-xl flex items-center justify-center text-xl"><i class="fa-solid fa-chart-pie"></i></div>
+                        <span class="bg-emerald-500/10 text-emerald-400 text-xs font-bold px-2.5 py-1 rounded-full border border-emerald-500/20">Aprobado</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white group-hover:text-amber-400 transition">Analista Financiero</h3>
+                    <p class="text-sm text-slate-400 mb-4">Banco Agrícola • Santa Ana</p>
+                    <p class="text-lg font-extrabold text-white mb-6">$1,200 <span class="text-xs text-slate-500 font-normal">/ mes</span></p>
+                    <a href="detalle_empleo.html" class="block text-center w-full py-2.5 bg-slate-800 hover:bg-amber-500 hover:text-slate-900 text-white font-bold rounded-xl transition">Ver Detalles</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/auth.js"></script>
+    <script>
+        function irAMiPanel() {
+            const rol = localStorage.getItem('usuario_rol');
+            if (rol === 'empresa') window.location.href = 'empresa.html';
+            else if (rol === 'admin') window.location.href = 'admin.html';
+            else window.location.href = 'usuario.html';
+        }
+    </script>
+</body>
+</html>
