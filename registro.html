@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acceso | Zion Empleos</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
@@ -22,24 +23,16 @@
         </div>
 
         <!-- FORMULARIO LOGIN -->
-        <form id="form-login" onsubmit="event.preventDefault(); realizarLogin();" class="space-y-4">
+        <form id="form-login" class="space-y-4">
             <div>
                 <label class="block text-xs font-bold text-slate-400 mb-1">Correo Electrónico</label>
-                <input type="email" required class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:ring-2 focus:ring-amber-500">
+                <input id="email-login" type="email" required class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:ring-2 focus:ring-amber-500">
             </div>
             <div>
                 <label class="block text-xs font-bold text-slate-400 mb-1">Contraseña</label>
-                <input type="password" required class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:ring-2 focus:ring-amber-500">
+                <input id="password-login" type="password" required class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:ring-2 focus:ring-amber-500">
             </div>
-            <div class="bg-slate-800/50 p-3 rounded-xl border border-slate-700 mt-2">
-                <label class="block text-xs font-bold text-amber-500 mb-1"><i class="fa-solid fa-flask mr-1"></i> Entrar como (Modo Prueba):</label>
-                <select id="login-rol" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm font-semibold text-white">
-                    <option value="candidato">Candidato</option>
-                    <option value="empresa">Empresa</option>
-                    <option value="admin">Administrador</option>
-                </select>
-            </div>
-            <button type="submit" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold rounded-xl shadow-lg mt-4 transition">Entrar al Sistema</button>
+            <button id="btn-login" type="submit" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold rounded-xl shadow-lg mt-4 transition">Entrar al Sistema</button>
         </form>
 
         <!-- FORMULARIOS DE REGISTRO -->
@@ -58,7 +51,7 @@
             </div>
 
             <!-- REGISTRO CANDIDATO -->
-            <form id="form-reg-candidato" onsubmit="event.preventDefault(); alert('Candidato registrado con éxito. Ahora puedes iniciar sesión.'); switchAuthTab('login');" class="space-y-4">
+            <form id="form-reg-candidato" onsubmit="event.preventDefault(); Swal.fire({ title: 'Registro simulado', text: 'Candidato registrado con éxito. Ahora puedes iniciar sesión.', icon: 'success' }).then(() => switchAuthTab('login'));" class="space-y-4">
                 <div class="grid grid-cols-2 gap-3">
                     <input type="text" placeholder="Nombres" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white text-sm">
                     <input type="text" placeholder="Apellidos" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white text-sm">
@@ -73,7 +66,7 @@
             </form>
 
             <!-- REGISTRO EMPRESA -->
-            <form id="form-reg-empresa" onsubmit="event.preventDefault(); alert('Solicitud enviada al Administrador.'); switchAuthTab('login');" class="hidden space-y-4">
+            <form id="form-reg-empresa" onsubmit="event.preventDefault(); Swal.fire({ title: 'Solicitud enviada', text: 'El Administrador revisará la solicitud.', icon: 'success' }).then(() => switchAuthTab('login'));" class="hidden space-y-4">
                 <div class="bg-rose-500/10 border-l-4 border-rose-500 p-3 rounded-r-xl">
                     <h4 class="text-rose-400 font-bold text-xs"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Cero Tolerancia a Estafas</h4>
                     <p class="text-[11px] text-rose-200 mt-1">Zion Empleos se toma muy en serio la veracidad. Cuentas con documentos falsos serán reportadas.</p>
@@ -107,9 +100,6 @@
 
     <script src="js/auth.js"></script>
     <script>
-        function realizarLogin() {
-            loginSimulado(document.getElementById('login-rol').value); 
-        }
         function switchAuthTab(tab) {
             if(tab === 'login') {
                 document.getElementById('form-login').classList.remove('hidden');
@@ -138,5 +128,6 @@
             }
         }
     </script>
+    <script src="js/global.js"></script>
 </body>
 </html>

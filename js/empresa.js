@@ -1,144 +1,277 @@
-// js/empresa.js
-
-// 1. PROTECCIÓN DE RUTA
-const rolActual = localStorage.getItem('usuario_rol');
+// 1. PROTECCIÓN DE RUTA (Se mantiene igual, asumiendo que auth.js guarda esto)
+const rolActual = JSON.parse(localStorage.getItem('usuarioActivo'))?.rol;
 if (rolActual !== 'empresa') {
-    alert("Debes iniciar sesión como Empresa para ver esto.");
-    window.location.href = 'index.html';
+    Swal.fire({
+        title: 'Acceso restringido',
+        text: 'Debes iniciar sesión como empresa para ver esta sección.',
+        icon: 'warning'
+    }).then(() => {
+        window.location.href = 'index.html';
+    });
 }
 
-// 2. DATOS SIMULADOS INICIALES DE LA EMPRESA
-let misVacantes = [
-    { id: 1, titulo: "Desarrollador Full Stack", fecha: "2026-11-01", salario: 1800, estado: "Aprobado" },
-    { id: 2, titulo: "Analista de Datos", fecha: "2026-11-05", salario: 1400, estado: "Pendiente" },
-    { id: 3, titulo: "Diseñador UI/UX", fecha: "2026-10-20", salario: 1200, estado: "Rechazado" },
-    { id: 4, titulo: "Soporte Técnico", fecha: "2026-09-15", salario: 800, estado: "Revocado" }
-];
-
-// 3. FUNCIÓN PARA CAMBIAR DE PESTAÑA
+// 2. FUNCIÓN PARA CAMBIAR DE PESTAÑA (Se mantiene el diseño de tu compañero)
 function switchTab(tab) {
-    document.getElementById('vista-vacantes').classList.add('hidden');
-    document.getElementById('vista-publicar').classList.add('hidden');
-    
-    document.getElementById('tab-btn-vacantes').className = "px-4 py-2 rounded-lg text-slate-400 hover:text-white transition";
-    document.getElementById('tab-btn-publicar').className = "px-4 py-2 rounded-lg text-slate-400 hover:text-white transition";
+    const vistas = {
+        vacantes: document.getElementById('vista-vacantes'),
+        publicar: document.getElementById('vista-publicar')
+    };
+    const botones = {
+        vacantes: document.getElementById('tab-btn-vacantes'),
+        publicar: document.getElementById('tab-btn-publicar')
+    };
+    Object.values(vistas).forEach(vista => vista?.classList.add('hidden'));
+    Object.values(botones).forEach(boton => {
+        if (boton) boton.className = 'px-4 py-2 rounded-lg text-slate-400 hover:text-white transition';
+    });
 
     if (tab === 'vacantes') {
-        document.getElementById('vista-vacantes').classList.remove('hidden');
-        document.getElementById('tab-btn-vacantes').className = "px-4 py-2 rounded-lg bg-slate-700 text-amber-500 shadow-sm transition";
-    } else {
-        document.getElementById('vista-publicar').classList.remove('hidden');
-        document.getElementById('tab-btn-publicar').className = "px-4 py-2 rounded-lg bg-slate-700 text-amber-500 shadow-sm transition";
+        vistas.vacantes?.classList.remove('hidden');
+        if (botones.vacantes) botones.vacantes.className = 'px-4 py-2 rounded-lg bg-slate-700 text-amber-500 shadow-sm transition';
+        renderizarVacantesEmpresa(); // Recarga los datos al volver a la pestaña
+    } else if (tab === 'publicar') {
+        vistas.publicar?.classList.remove('hidden');
+        if (botones.publicar) botones.publicar.className = 'px-4 py-2 rounded-lg bg-slate-700 text-amber-500 shadow-sm transition';
     }
 }
 
-// 4. RENDERIZAR TABLA Y APLICAR FILTRO POR ESTADO
-function renderizarVacantesEmpresa() {
+// 3. RENDERIZAR TABLA DE VACANTES (CONECTADO AL BACKEND)
+async function renderizarVacantesEmpresa() {
     const tabla = document.getElementById('tabla-vacantes-empresa');
     if(!tabla) return;
     
     const filtro = document.getElementById('filtro-estado-vacante').value;
-    tabla.innerHTML = ''; 
+    tabla.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-500">Cargando vacantes...</td></tr>'; 
 
-    // Filtrar los datos
-    const vacantesFiltradas = filtro === 'Todos' 
-        ? misVacantes 
-        : misVacantes.filter(v => v.estado === filtro);
+    try {
+        // En una app real, enviarías el ID de la empresa logueada. 
+        // Aquí asumimos una ruta que trae los empleos de la BD.
+        const response = await fetch('http://localhost:4000/api/empleos'); 
+        const empleosBD = await response.json();
 
-    if (vacantesFiltradas.length === 0) {
-        tabla.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-500">No hay vacantes con este estado.</td></tr>`;
-        return;
+        // Filtrar los datos
+        const vacantesFiltradas = filtro === 'Todos' 
+            ? empleosBD 
+            : empleosBD.filter(v => v.estado === filtro);
+
+        if (vacantesFiltradas.length === 0) {
+            tabla.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500">No hay vacantes publicadas o con este estado.</td></tr>`;
+            return;
+        }
+
+        tabla.innerHTML = ''; 
+        // Dibujar filas
+        vacantesFiltradas.forEach(vacante => {
+            let badgeClass = "";
+            if (vacante.estado === 'Aprobado') badgeClass = "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
+            else if (vacante.estado === 'Pendiente') badgeClass = "bg-amber-500/20 text-amber-400 border-amber-500/30";
+            else if (vacante.estado === 'Rechazado') badgeClass = "bg-rose-500/20 text-rose-400 border-rose-500/30";
+            else badgeClass = "bg-slate-700 text-slate-300 border-slate-600";
+
+            tabla.innerHTML += `
+                <tr class="hover:bg-slate-800/50 transition border-b border-slate-800">
+                    <td class="py-4 px-4 font-bold text-white">${vacante.titulo}</td>
+                    <td class="py-4 px-4 text-slate-400">${new Date(vacante.fecha_publicacion).toLocaleDateString()}</td>
+                    <td class="py-4 px-4 font-semibold text-slate-300">$${vacante.salario}</td>
+                    <td class="py-4 px-4">
+                        <span class="px-2.5 py-1 text-[10px] font-bold border rounded-full ${badgeClass}">
+                            ${vacante.estado}
+                        </span>
+                    </td>
+                    <td class="py-4 px-4 text-right">
+                        <!-- REQUERIMIENTO: Inactivar/Eliminar ofertas -->
+                        <button onclick="eliminarOferta(${vacante.id_empleo})" class="text-rose-500 hover:text-rose-400 font-bold text-xs ml-2">Eliminar</button>
+                    </td>
+                </tr>
+            `;
+        });
+    } catch (error) {
+        console.error("Error al cargar vacantes:", error);
+        tabla.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-rose-500">Error al cargar datos del servidor.</td></tr>`;
     }
-
-    // Dibujar filas
-    vacantesFiltradas.forEach(vacante => {
-        let badgeClass = "";
-        if (vacante.estado === 'Aprobado') badgeClass = "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
-        else if (vacante.estado === 'Pendiente') badgeClass = "bg-amber-500/20 text-amber-400 border-amber-500/30";
-        else if (vacante.estado === 'Rechazado') badgeClass = "bg-rose-500/20 text-rose-400 border-rose-500/30";
-        else if (vacante.estado === 'Revocado') badgeClass = "bg-slate-700 text-slate-300 border-slate-600";
-
-        tabla.innerHTML += `
-            <tr class="hover:bg-slate-800/50 transition border-b border-slate-800">
-                <td class="py-4 px-4 font-bold text-white">${vacante.titulo}</td>
-                <td class="py-4 px-4 text-slate-400">${vacante.fecha}</td>
-                <td class="py-4 px-4 font-semibold text-slate-300">$${vacante.salario}</td>
-                <td class="py-4 px-4">
-                    <span class="px-2.5 py-1 text-[10px] font-bold border rounded-full ${badgeClass}">
-                        ${vacante.estado}
-                    </span>
-                </td>
-                <td class="py-4 px-4 text-right">
-                    <button class="text-amber-500 hover:text-amber-400 font-bold text-xs" title="Ver detalles">Ver</button>
-                </td>
-            </tr>
-        `;
-    });
 }
 
-// 5. PUBLICAR NUEVA VACANTE Y GUARDARLA PARA EL BUSCADOR
-function publicarNuevaVacante(e) {
+// 4. PUBLICAR NUEVA VACANTE (CONECTADO AL BACKEND)
+async function publicarNuevaVacante(e) {
     e.preventDefault();
     
-    // Capturamos TODOS los datos del formulario
-    const titulo = document.getElementById('new-title').value;
-    const sector = document.getElementById('new-sector').value;
-    const ubicacion = document.getElementById('new-location').value;
-    const modalidad = document.getElementById('new-modality').value;
-    const exp = document.getElementById('new-exp').value;
-    const salario = document.getElementById('new-salary').value;
-    const desc = document.getElementById('new-desc').value;
-    const reqsRaw = document.getElementById('new-reqs').value; 
-    const beneficiosRaw = document.getElementById('new-beneficios').value; // Asegúrate que en tu HTML el ID sea este, si no, cámbialo.
-    const contacto = document.getElementById('new-contact').value;
-
-    // Procesamos los textos separados por coma a arreglos
-    const reqs = reqsRaw.split(',').map(r => r.trim());
-    const beneficios = beneficiosRaw ? beneficiosRaw.split(',').map(b => b.trim()) : ["Beneficios estándar"];
-
-    // Creamos el objeto completo
+    const usuarioActivo = JSON.parse(localStorage.getItem('usuarioActivo'));
+    
+    // Objeto para la base de datos según tu script SQL
     const nuevaVacante = {
-        id: Date.now(), // ID único basado en el tiempo
-        titulo: titulo,
-        empresa: "NovaTech Solutions S.A.", 
-        verificada: true,
-        ubicacion: ubicacion,
-        modalidad: modalidad,
-        salario: Number(salario),
-        exp: exp,
-        sector: sector,
-        contrato: "Tiempo Completo",
-        fecha: "Hace un momento",
-        desc: desc,
-        reqs: reqs,
-        beneficios: beneficios,
-        contacto: contacto,
-        sede: ubicacion,
-        web: "www.novatech.com.sv"
+        empresa_id: 1, // En un sistema real esto viene de la sesión de la empresa
+        titulo: document.getElementById('new-title').value,
+        sector: document.getElementById('new-sector').value,
+        ubicacion: document.getElementById('new-location').value,
+        modalidad: document.getElementById('new-modality').value,
+        experiencia: document.getElementById('new-exp').value,
+        salario: parseFloat(document.getElementById('new-salary').value),
+        descripcion: document.getElementById('new-desc').value,
+        requisitos: document.getElementById('new-reqs').value,
+        beneficios: document.getElementById('new-beneficios').value || "Beneficios de ley"
     };
 
-    // Guardamos en localStorage para que busqueda.js lo lea
-    let vacantesGlobales = JSON.parse(localStorage.getItem('vacantes_publicadas')) || [];
-    vacantesGlobales.unshift(nuevaVacante);
-    localStorage.setItem('vacantes_publicadas', JSON.stringify(vacantesGlobales));
+    try {
+        const response = await fetch('http://localhost:4000/api/empleos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(nuevaVacante)
+        });
 
-    // Añadir a la tabla local de la empresa
-    misVacantes.unshift({ 
-        id: nuevaVacante.id, 
-        titulo: titulo, 
-        fecha: new Date().toISOString().split('T')[0], 
-        salario: Number(salario), 
-        estado: "Pendiente" 
-    });
-    
-    alert("Vacante publicada. Ahora es visible en el buscador (en estado de prueba).");
-    
-    e.target.reset();
-    switchTab('vacantes');
-    renderizarVacantesEmpresa();
+        const data = await response.json();
+
+        if(data.success) {
+            await Swal.fire({
+                title: 'Vacante publicada',
+                text: 'La vacante se publicó exitosamente.',
+                icon: 'success'
+            });
+            e.target.reset();
+            switchTab('vacantes');
+        } else {
+            await Swal.fire({
+                title: 'No se pudo publicar la vacante',
+                text: data.error || 'Verifica los datos e inténtalo de nuevo.',
+                icon: 'error'
+            });
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        await Swal.fire({
+            title: 'Error de conexión',
+            text: 'No se pudo guardar la vacante en el servidor.',
+            icon: 'error'
+        });
+    }
 }
 
-// 6. INICIALIZAR AL CARGAR LA PÁGINA
+// 5. CARGAR APLICANTES (CONECTADO AL BACKEND)
+// REQUERIMIENTO: Empresa ve aplicantes de ofertas
+async function cargarAplicantes() {
+    const tabla = document.getElementById('tabla-aplicantes-empresa');
+    if(!tabla) return;
+    
+    tabla.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-slate-500">Buscando postulantes...</td></tr>';
+
+    try {
+        const response = await fetch('http://localhost:4000/api/postulaciones');
+        const postulaciones = await response.json();
+
+        if (postulaciones.length === 0) {
+            tabla.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-500">No hay postulaciones nuevas.</td></tr>`;
+            return;
+        }
+
+        tabla.innerHTML = '';
+        postulaciones.forEach(post => {
+            tabla.innerHTML += `
+                <tr class="hover:bg-slate-800/50 transition border-b border-slate-800">
+                    <td class="py-4 px-4 font-bold text-white">${post.candidato_nombre || 'Usuario'}</td>
+                    <td class="py-4 px-4 text-slate-400">${post.titulo_empleo || 'Vacante'}</td>
+                    <td class="py-4 px-4 font-semibold text-slate-300">${post.estado}</td>
+                    <td class="py-4 px-4 text-right">
+                        <!-- REQUERIMIENTO: Aceptar o Denegar aplicante -->
+                        <button onclick="cambiarEstadoPostulante(${post.id_postulacion}, 'Contratado')" class="bg-emerald-600 hover:bg-emerald-500 text-white px-2 py-1 rounded text-xs mr-2">Aceptar</button>
+                        <button onclick="cambiarEstadoPostulante(${post.id_postulacion}, 'Rechazado')" class="bg-rose-600 hover:bg-rose-500 text-white px-2 py-1 rounded text-xs">Denegar</button>
+                    </td>
+                </tr>
+            `;
+        });
+    } catch (error) {
+        console.error("Error al cargar postulaciones:", error);
+        tabla.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-rose-500">Error al cargar datos del servidor.</td></tr>`;
+    }
+}
+
+// 6. FUNCIONES DE ACCIÓN (CONECTADAS AL BACKEND)
+
+// Inactivar/eliminar ofertas[cite: 7]
+function eliminarOferta(idEmpleo) {
+    return Swal.fire({
+        title: '¿Eliminar esta oferta?',
+        text: 'Esta acción no se puede deshacer.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+    }).then(async (result) => {
+        if (!result.isConfirmed) return;
+
+        try {
+            const response = await fetch(`http://localhost:4000/api/empleos/${idEmpleo}`, {
+                method: 'DELETE'
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                await Swal.fire({
+                    title: 'Oferta eliminada',
+                    text: 'La oferta se eliminó correctamente.',
+                    icon: 'success'
+                });
+                renderizarVacantesEmpresa(); // Recargar la tabla[cite: 7]
+            } else {
+                await Swal.fire({
+                    title: 'No se pudo eliminar la oferta',
+                    text: data.error || 'Inténtalo de nuevo.',
+                    icon: 'error'
+                });
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            await Swal.fire({
+                title: 'Error de conexión',
+                text: 'No se pudo completar la eliminación.',
+                icon: 'error'
+            });
+        }
+        });
+}
+
+// Empresa Acepta o Deniega aplicante[cite: 7]
+async function cambiarEstadoPostulante(idPostulacion, nuevoEstado) {
+    try {
+        const response = await fetch(`http://localhost:4000/api/postulaciones/${idPostulacion}/estado`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ estado: nuevoEstado })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            await Swal.fire({
+                title: 'Estado actualizado',
+                text: `El candidato ha sido ${nuevoEstado}.`,
+                icon: 'success'
+            });
+            cargarAplicantes(); // Recargar la tabla[cite: 7]
+        } else {
+            await Swal.fire({
+                title: 'No se pudo actualizar el estado',
+                text: data.error || 'Inténtalo de nuevo.',
+                icon: 'error'
+            });
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        await Swal.fire({
+            title: 'Error de conexión',
+            text: 'No se pudo actualizar el estado del candidato.',
+            icon: 'error'
+        });
+    }
+}
+
+// 7. INICIALIZAR AL CARGAR LA PÁGINA
 document.addEventListener('DOMContentLoaded', () => {
+    // Si tu compañero tiene un form con ID "form-publicar", le agregamos el evento
+    const formPublicar = document.getElementById('form-publicar');
+    if(formPublicar) {
+        formPublicar.addEventListener('submit', publicarNuevaVacante);
+    }
+
     renderizarVacantesEmpresa();
 });

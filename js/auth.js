@@ -1,27 +1,49 @@
-// js/auth.js
+async function iniciarSesion(event) {
+    event.preventDefault();
+    
+    const email = document.getElementById('email-login').value;
+    const password = document.getElementById('password-login').value;
 
-// 1. Función para Iniciar Sesión (Simulada)
-function loginSimulado(rol) {
-    // Guardamos el rol en el navegador. 
-    // Roles válidos: 'candidato', 'empresa', 'admin'
-    localStorage.setItem('usuario_rol', rol);
-    localStorage.setItem('usuario_nombre', 'Usuario Demo'); // Puedes capturar el nombre del input
+    try {
+        const response = await fetch('http://localhost:4000/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
 
-    // Redirigir según el rol
-    if (rol === 'candidato') {
-        window.location.href = 'usuario.html';
-    } else if (rol === 'empresa') {
-        window.location.href = 'empresa.html';
-    } else if (rol === 'admin') {
-        window.location.href = 'admin.html';
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            await Swal.fire({
+                title: 'No se pudo iniciar sesión',
+                text: data.message || 'Verifica tus credenciales e inténtalo de nuevo.',
+                icon: 'error'
+            });
+            return;
+        }
+
+        if (!data.user) throw new Error('El servidor no devolvió los datos del usuario.');
+
+        localStorage.setItem('usuarioActivo', JSON.stringify(data.user));
+        localStorage.setItem('usuario_rol', data.user.rol);
+        localStorage.setItem('usuario_nombre', data.user.nombre);
+        localStorage.setItem('usuario_id', data.user.id);
+
+        if (data.user.rol === 'admin') {
+            window.location.href = 'admin.html';
+        } else if (data.user.rol === 'empresa') {
+            window.location.href = 'empresa.html';
+        } else {
+            window.location.href = 'usuario.html';
+        }
+    } catch (error) {
+        console.error('Error al conectar con el servidor:', error);
+        await Swal.fire({
+            title: 'Error de conexión',
+            text: 'No fue posible conectar con el servidor.',
+            icon: 'error'
+        });
     }
-}
-
-// 2. Función para Cerrar Sesión
-function cerrarSesion() {
-    localStorage.removeItem('usuario_rol');
-    localStorage.removeItem('usuario_nombre');
-    window.location.href = 'index.html';
 }
 
 // 3. Función para Proteger Páginas (Guardia de Seguridad)
@@ -30,30 +52,17 @@ function protegerPagina(rolRequerido) {
     
     // Si no hay sesión o el rol no coincide, lo pateamos al index
     if (!rolActual || rolActual !== rolRequerido) {
-        alert("Acceso denegado. Debes iniciar sesión con la cuenta correcta.");
-        window.location.href = 'index.html';
+        return Swal.fire({
+            title: 'Acceso denegado',
+            text: 'Debes iniciar sesión con la cuenta correcta.',
+            icon: 'warning'
+        }).then(() => {
+            window.location.href = 'index.html';
+        });
     }
 }
 
-// 4. Función para actualizar el Header (El menú de arriba)
-function actualizarHeader() {
-    const rol = localStorage.getItem('usuario_rol');
-    const btnLogin = document.getElementById('btn-login-header'); // Tendrás que darle este ID a tu botón de login
-    const btnLogout = document.getElementById('btn-logout-header'); // ID para el botón de salir
-    
-    if (rol) {
-        // Si está logueado, ocultamos el botón de login y mostramos el de logout
-        if(btnLogin) btnLogin.classList.add('hidden');
-        if(btnLogout) {
-            btnLogout.classList.remove('hidden');
-            btnLogout.innerHTML = `<i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión`;
-        }
-    } else {
-        // Si no está logueado, mostramos login y ocultamos logout
-        if(btnLogin) btnLogin.classList.remove('hidden');
-        if(btnLogout) btnLogout.classList.add('hidden');
-    }
-}
-
-// Ejecutar la actualización del header cuando cargue cualquier página
-document.addEventListener('DOMContentLoaded', actualizarHeader);
+document.addEventListener('DOMContentLoaded', () => {
+    const formLogin = document.getElementById('form-login');
+    if (formLogin) formLogin.addEventListener('submit', iniciarSesion);
+});
